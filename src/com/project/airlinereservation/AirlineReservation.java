@@ -1,11 +1,15 @@
 package com.project.airlinereservation;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * AirlineReservation class     Reservation Console Program
  * @author                      Teckth Symphony
+ * @version 1.0
  */
 public class AirlineReservation {
 
@@ -17,21 +21,98 @@ public class AirlineReservation {
      */
     public static void main(String[] args) {
 
-        // variables declarations with initial values
-        String firstName = "";          // stores firstName
-        String lastName = "";           // stores lastName
-        String email = "";              // stores email address
-        String confirmation = "";       // stores confirmation number
-        String localTimeStamp = "";     // stores system-based time date and zone
-        int age = 0;                    // stores age
+        int airlineCapacity = 3;
+        String newPassenger = "";
+        String heading = "";
 
-        firstName = getName("Enter first name: ");
-        lastName = getName("Enter last name: ");
-        email = getEmail("Enter email: ");
-        age = getAge("Enter age: ");
+        List<String> passengers = new LinkedList<>();
 
-        System.out.println("First name: " + firstName + "\nLast Name: " + lastName +
-                            "\nEmail: " + email + "\nAge: " + age);
+        while (airlineCapacity != -1) {
+
+            System.out.println("Remaining seat(s): " + airlineCapacity);
+
+            char userChoice = userChoice();
+
+            switch (userChoice) {
+
+                case '1':
+
+                    String firstName = getName("Enter first name: ");
+                    String lastName = getName("Enter last name: ");
+                    String email = getEmail("Enter email: ");
+                    int age = getAge("Enter age: ");
+                    String confirmation = generateConfirmationNumber();
+                    String localTimeStamp = generateZonedTimeStamp();
+
+                    newPassenger = String.format("%-15s %-15s %-25s %-7s %-15s %-15s%n",
+                            firstName, lastName, email, age, confirmation, localTimeStamp);
+
+                    boolean passengerExists =
+                            ifPassengerExists(passengers, firstName, lastName, email, age);
+
+                    if (passengerExists) {
+                        System.out.println("Passenger already exists");
+                        continue;
+                    }
+
+                    passengers.add(newPassenger);
+                    airlineCapacity--;
+                    break;
+
+                case '2':
+
+                    heading = String.format("%-15S %-15S %-25S %-7S %-15S %-15S",
+                            "First Name", "Last Name", "Email", "Age", "Confirmation", "Booking Date/Time");
+
+                    System.out.println(heading);
+
+                    for (String passenger : passengers) {
+                        System.out.println(passenger);
+                    }
+                    break;
+
+                case '3':
+
+                    System.out.print("Enter confirmation number: ");
+                    String confirmationNumber = scan.next();
+
+                    System.out.println(heading);
+                    for (int i = 0; i < passengers.size(); i++){
+                        if (passengers.get(i).contains(confirmationNumber)) {
+                            System.out.println(passengers.get(i));
+                            break;
+                        }
+                    }
+                    break;
+
+                case '4':
+
+                    System.out.println("Good bye!");
+                    break;
+
+                default:
+
+                    System.out.println("Invalid option, please try again");
+
+            }
+
+            if (airlineCapacity == 0)
+                System.out.println("Seats are full");
+
+            if (userChoice == '4')
+                break;
+        }
+    }
+
+    public static void menu(){
+        System.out.println("Press\n1 >> Book\n2 >> Display List\n3 >> Find Passenger\n4 >> Exit\n>> ");
+    }
+
+    public static char userChoice(){
+        menu();
+        char userChoice = scan.next().charAt(0);
+        return userChoice;
+
     }
 
     /**
@@ -82,6 +163,14 @@ public class AirlineReservation {
         return name;
     }
 
+    /**
+     *
+     * @param message takes in a string argument
+     * @return returns a valid email
+     * @see
+     * {@link#isValidEmail(String)isValidEmail}method
+     * refrence:
+     */
     public static String getEmail(String message){
 
         String email = "";
@@ -103,7 +192,7 @@ public class AirlineReservation {
      * @param age takes in an int value 
      * @return returns true only if the age is greater than 5 and smaller than 120
      */
-    public static boolean validateAge(int age){
+    public static boolean isValidAge(int age){
         return (age > 5 && age < 120);
     }
 
@@ -120,10 +209,10 @@ public class AirlineReservation {
 
             try {
                 
-                System.out.println(message);
+                System.out.print(message);
                 age = scan.nextInt();
                 
-                if (validateAge(age))
+                if (isValidAge(age))
                     break;
                 System.out.println("Invalid " + message.substring(message.indexOf(" ") + 1) + "please try again");
             }
@@ -134,5 +223,62 @@ public class AirlineReservation {
         }
         return age;
     }
+
+    /**
+     * @param 'not' provided
+     * @return alphanumeric randomized string with a length of 12
+     */
+    public static String generateConfirmationNumber(){
+
+        String lowerCase = "abcdefghijklmnopqrstuvwxyz";
+        String uppercase = lowerCase.toUpperCase();
+        String numbers = "0123456789";
+
+        String alphaNumeric = lowerCase + uppercase + numbers;
+        String confirmationNumber = "";
+
+        int confirmationStrLength = 12;
+
+        Random ran = new Random();
+
+        for(int i = 0; i < confirmationStrLength; i++){
+
+            int randomNumber = ran.nextInt(alphaNumeric.length());
+            char ch = alphaNumeric.charAt(randomNumber);
+            confirmationNumber += ch;
+        }
+        return confirmationNumber;
+    }
+
+    /**
+     * @param 'not' provided
+     * @return string representation of date time and region
+     */
+    public static String generateZonedTimeStamp(){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm:ss z");
+
+        Instant now = Instant.now();
+        ZonedDateTime zonedTime = ZonedDateTime.ofInstant(now, ZoneId.systemDefault());
+
+        return zonedTime.format(formatter);
+    }
+
+    public static boolean ifPassengerExists(List<String> passengers, String firstName,
+                                String lastName, String email, int age){
+
+        for (int i = 0; i < passengers.size(); i++){
+
+            if (passengers.get(i).contains(firstName) &&
+                    passengers.get(i).contains(lastName) &&
+                    passengers.get(i).contains(email) &&
+                    passengers.get(i).contains(String.valueOf(age))){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
 
 }
