@@ -29,7 +29,8 @@ public class AirlineReservation {
      * @return true only if name contains letters containing a-z or A-Z and
      * the inclusive length of 2-15
      */
-    private static boolean validateName(String name){
+    public static boolean validateName(String name){
+        if (name == null) return false;
         return name.matches("^[a-zA-Z]{2,15}");
     }
 
