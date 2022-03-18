@@ -25,10 +25,11 @@ public class AirlineReservation {
         int age = 0;                    // stores age
 
         firstName = getName("Enter first name: ");
-        System.out.println(firstName);
+        lastName = getName("Enter last name: ");
+        email = getEmail("Enter email: ");
 
-        lastName = getName(lastName);
-        System.out.println(lastName);
+        System.out.println("First name: " + firstName + "\nLast Name: " + lastName +
+                            "\nEmail: " + email);
     }
 
     /**
@@ -37,8 +38,25 @@ public class AirlineReservation {
      * the inclusive length of 2-15
      */
     public static boolean validateName(String name){
+
         if (name == null) return false;
         return name.matches("^[a-zA-Z]{2,15}");
+    }
+
+    /**
+     * @param email is a type string for email
+     * @return true if the provided email address contains all the properties of
+     * an email ie: username containing only alphanumeric characters in the range
+     * of 5-15, @ symbol after username, followed by provider name containing
+     * 3-6 alphabetic characters, followed by . character, followed by domain name
+     * containing exactly 2 or 3 alphabetic characters
+     */
+    public static boolean validateEmail(String email){
+
+        if (email == null) return false;
+        return email.matches("^[a-zA-Z0-9]{5,15}" +
+                                    "[@]{1}" + "[a-zA-Z]{3,6}" +
+                                    "[.]{1}" + "[a-zA-Z]{2,3}$");
     }
 
     /**
@@ -48,6 +66,7 @@ public class AirlineReservation {
     public static String getName(String message){
 
         String name = "";
+
         while(true) {
 
             System.out.print(message);
@@ -55,9 +74,27 @@ public class AirlineReservation {
 
             if(validateName(name))
                 break;
+
             System.out.println("Invalid " + message.substring(message.indexOf(" ") + 1) + "please try again");
         }
         return name;
+    }
+
+    public static String getEmail(String message){
+
+        String email = "";
+
+        while(true){
+
+            System.out.print(message);
+            email = scan.next();
+
+            if (validateEmail(email))
+                break;
+
+            System.out.println("Invalid " + message.substring(message.indexOf(" ") + 1) + "please try again");
+        }
+        return email;
     }
 
 }

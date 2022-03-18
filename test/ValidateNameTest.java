@@ -1,9 +1,9 @@
-import com.project.airlinereservation.*;
+import com.project.airlinereservation.AirlineReservation;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class AirlineReservationTest {
+public class ValidateNameTest {
 
     AirlineReservation airlineReservation = new AirlineReservation();
 
