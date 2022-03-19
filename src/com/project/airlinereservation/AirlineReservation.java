@@ -37,31 +37,21 @@ public class AirlineReservation {
 
                 case '1':
 
+                    String traveler = getPassenger();
+
+                    if(ifPassengerExists(passengers, traveler)) {
+                        System.out.println("Passenger already exists");
+                        continue;
+                    }
+                    
+                    passengers.add(traveler);
+                    System.out.println("Booking confirmed!! Your confirmation number is: " ); // FIXME: 3/19/22
+                    airlineCapacity--;
+
                     if (airlineCapacity == 0) {
                         System.out.println("Seats are full");
                         break;
                     }
-                    String firstName = getName("Enter first name: ").toUpperCase();
-                    String lastName = getName("Enter last name: ").toUpperCase();
-                    String email = getEmail("Enter email: ").toUpperCase();
-                    int age = getAge("Enter age: ");
-                    String confirmation = generateConfirmationNumber();
-                    String localTimeStamp = generateZonedTimeStamp().toUpperCase();
-
-                    newPassenger = String.format("%-15s %-15s %-25s %-7s %-15s %-15s",
-                            firstName, lastName, email, age, confirmation, localTimeStamp);
-
-                    boolean passengerExists =
-                            ifPassengerExists(passengers, firstName, lastName, email, age);
-
-                    if (passengerExists) {
-                        System.out.println("Passenger already exists");
-                        continue;
-                    }
-
-                    passengers.add(newPassenger);
-                    System.out.println("Booking confirmed!! Your confirmation number is: " + confirmation);
-                    airlineCapacity--;
                     break;
 
                 case '2':
@@ -72,6 +62,7 @@ public class AirlineReservation {
                     System.out.println(heading);
 
                     for (String passenger : passengers) {
+                        passenger = displayPassenger(passenger);
                         System.out.println(passenger);
                     }
                     break;
@@ -85,10 +76,16 @@ public class AirlineReservation {
 
                     for (int i = 0; i < passengers.size(); i++){
                         if (passengers.get(i).contains(confirmationNumber)) {
-                            System.out.println(passengers.get(i));
+                            newPassenger = displayPassenger(passengers.get(i));
+                            System.out.println(newPassenger);
                             break;
                         }
                     }
+                    break;
+
+                case '4':
+
+                    System.out.println("Good Bye!!");
                     break;
 
                 default:
@@ -98,10 +95,50 @@ public class AirlineReservation {
             }
 
             if (userChoice == '4') {
-                System.out.println("Good bye!!");
                 break;
             }
         }
+    }
+
+    public static String getPassenger(){
+
+        String firstName = getName("Enter first name: ").toUpperCase();
+        String lastName = getName("Enter last name: ").toUpperCase();
+        String email = getEmail("Enter email: ").toUpperCase();
+        int age = getAge("Enter age: ");
+
+        String confirmation = generateConfirmationNumber();
+        String localTimeStamp = generateZonedTimeStamp().toUpperCase();
+
+        return firstName + "," + lastName + "," + email + "," + age + "," 
+                + confirmation + "," + localTimeStamp;  
+    }
+    
+    public static String displayPassenger(String passenger){
+        String [] psg = passenger.split(",");
+        passenger = String.format("%-15s %-15s %-25s %-7s %-15s %-15s",
+                            psg[0], psg[1], psg[2], psg[3], psg[4], psg[5]);
+        return passenger;
+    }
+
+    /**
+     * @param passenger is a list of current passengers
+     * @param traveler  is a string varialbe in the list
+     * @return true if the passenger exists in the passenger list
+     */
+    public static boolean ifPassengerExists(List<String> passenger, String traveler){
+
+        String [] psg = traveler.split(",");
+
+        for (int i = 0; i < passenger.size(); i++){
+
+            if (passenger.get(i).contains(psg[0]) &&
+                    passenger.get(i).contains(psg[1]) &&
+                    passenger.get(i).contains(psg[2]) &&
+                    passenger.get(i).contains(psg[3]))
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -112,7 +149,7 @@ public class AirlineReservation {
     }
 
     /**
-     * @param no parameter provided
+     * @param 'no' parameter provided
      * @return user choice of char type
      */
     public static char userChoice(){
@@ -273,26 +310,4 @@ public class AirlineReservation {
         return zonedTime.format(formatter);
     }
 
-    /**
-     * @param passengers    arraylist that holds all the passengers
-     * @param firstName     first name of a passenger
-     * @param lastName      second name of a passenger
-     * @param email         email address of a passenger
-     * @param age           age of a passenger
-     * @return              returns true if the passenger exists in the current arraylist
-     */
-    public static boolean ifPassengerExists(List<String> passengers, String firstName,
-                                String lastName, String email, int age){
-
-        for (int i = 0; i < passengers.size(); i++){
-
-            if (passengers.get(i).contains(firstName) &&
-                    passengers.get(i).contains(lastName) &&
-                    passengers.get(i).contains(email) &&
-                    passengers.get(i).contains(String.valueOf(age))){
-                return true;
-            }
-        }
-        return false;
-    }
 }
