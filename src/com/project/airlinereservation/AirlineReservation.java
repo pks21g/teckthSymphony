@@ -27,7 +27,7 @@ public class AirlineReservation {
 
         List<String> passengers = new LinkedList<>();
 
-        while (airlineCapacity != -1) {
+        while (true) {
 
             System.out.println("Remaining seat(s): " + airlineCapacity);
 
@@ -37,14 +37,18 @@ public class AirlineReservation {
 
                 case '1':
 
-                    String firstName = getName("Enter first name: ");
-                    String lastName = getName("Enter last name: ");
-                    String email = getEmail("Enter email: ");
+                    if (airlineCapacity == 0) {
+                        System.out.println("Seats are full");
+                        break;
+                    }
+                    String firstName = getName("Enter first name: ").toUpperCase();
+                    String lastName = getName("Enter last name: ").toUpperCase();
+                    String email = getEmail("Enter email: ").toUpperCase();
                     int age = getAge("Enter age: ");
                     String confirmation = generateConfirmationNumber();
-                    String localTimeStamp = generateZonedTimeStamp();
+                    String localTimeStamp = generateZonedTimeStamp().toUpperCase();
 
-                    newPassenger = String.format("%-15s %-15s %-25s %-7s %-15s %-15s%n",
+                    newPassenger = String.format("%-15s %-15s %-25s %-7s %-15s %-15s",
                             firstName, lastName, email, age, confirmation, localTimeStamp);
 
                     boolean passengerExists =
@@ -56,6 +60,7 @@ public class AirlineReservation {
                     }
 
                     passengers.add(newPassenger);
+                    System.out.println("Booking confirmed!! Your confirmation number is: " + confirmation);
                     airlineCapacity--;
                     break;
 
@@ -77,6 +82,7 @@ public class AirlineReservation {
                     String confirmationNumber = scan.next();
 
                     System.out.println(heading);
+
                     for (int i = 0; i < passengers.size(); i++){
                         if (passengers.get(i).contains(confirmationNumber)) {
                             System.out.println(passengers.get(i));
@@ -85,32 +91,35 @@ public class AirlineReservation {
                     }
                     break;
 
-                case '4':
-
-                    System.out.println("Good bye!");
-                    break;
-
                 default:
 
                     System.out.println("Invalid option, please try again");
-
+                    break;
             }
 
-            if (airlineCapacity == 0)
-                System.out.println("Seats are full");
-
-            if (userChoice == '4')
+            if (userChoice == '4') {
+                System.out.println("Good bye!!");
                 break;
+            }
         }
     }
 
+    /**
+     * Utility method to display menu message
+     */
     public static void menu(){
-        System.out.println("Press\n1 >> Book\n2 >> Display List\n3 >> Find Passenger\n4 >> Exit\n>> ");
+        System.out.print("Press\n1 >> Book\n2 >> Display List\n3 >> Find Passenger\n4 >> Exit\n>> ");
     }
 
+    /**
+     * @param no parameter provided
+     * @return user choice of char type
+     */
     public static char userChoice(){
+
         menu();
         char userChoice = scan.next().charAt(0);
+
         return userChoice;
 
     }
@@ -264,6 +273,14 @@ public class AirlineReservation {
         return zonedTime.format(formatter);
     }
 
+    /**
+     * @param passengers    arraylist that holds all the passengers
+     * @param firstName     first name of a passenger
+     * @param lastName      second name of a passenger
+     * @param email         email address of a passenger
+     * @param age           age of a passenger
+     * @return              returns true if the passenger exists in the current arraylist
+     */
     public static boolean ifPassengerExists(List<String> passengers, String firstName,
                                 String lastName, String email, int age){
 
@@ -277,8 +294,5 @@ public class AirlineReservation {
             }
         }
         return false;
-
     }
-
-
 }
