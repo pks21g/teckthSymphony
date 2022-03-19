@@ -3,6 +3,9 @@ import com.project.airlinereservation.AirlineReservation;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/**
+ * @version jUnit 4.13.1
+ */
 public class ValidateEmailTest {
 
     AirlineReservation airlineReservation = new AirlineReservation();

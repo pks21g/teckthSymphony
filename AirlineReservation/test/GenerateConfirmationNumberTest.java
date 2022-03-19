@@ -1,8 +1,11 @@
 import com.project.airlinereservation.AirlineReservation;
-import org.junit.Test;
 
+import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * @version jUnit 4.13.1
+ */
 public class GenerateConfirmationNumberTest {
 
     AirlineReservation airlineReservation = new AirlineReservation();
@@ -12,7 +15,6 @@ public class GenerateConfirmationNumberTest {
 
         int length = 12;
         String confirmation = airlineReservation.generateConfirmationNumber();
-        System.out.println(confirmation);
 
         assertTrue("length test failed", confirmation.length() == length );
     }
