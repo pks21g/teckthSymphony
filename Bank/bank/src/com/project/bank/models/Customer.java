@@ -15,7 +15,28 @@ public class Customer {
         super();
     }
 
-    public Customer(String firstName, String lastName, String accountType, double balance, double deposit, String email, String password) {
+    public Customer(String email, String password){
+        this.email = email;
+        this.password = password;
+    }
+
+    public Customer(String email, String password, double deposit) {
+        this.email = email;
+        this.password = password;
+        this.deposit = deposit;
+    }
+
+    public Customer(String firstName, String lastName, String email, String password, String accountType, double deposit) {
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.accountType = accountType;
+        this.email = email;
+        this.password = password;
+        this.deposit = deposit;
+    }
+
+    public Customer(String firstName, String lastName , String email, String password, String accountType, double deposit,  double balance) {
 
         this.firstName = firstName;
         this.lastName = lastName;
@@ -26,7 +47,7 @@ public class Customer {
         this.password = password;
     }
 
-    public Customer(int userId, String firstName, String lastName, String accountType, double balance, double deposit, String email, String password) {
+    public Customer(int userId, String firstName, String lastName, String email, String password, String accountType, double deposit, double balance) {
 
         this.userId = userId;
         this.firstName = firstName;
@@ -101,13 +122,13 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer:" +
-                //userId +
-                firstName +
+                userId +
+                "," + firstName +
                 "," + lastName +
-                "," + accountType +
-                "," + balance +
-                "," + deposit +
                 "," + email +
-                "," + password;
+                "," + password +
+                "," + accountType +
+                "," + deposit +
+                "," + balance;
     }
 }

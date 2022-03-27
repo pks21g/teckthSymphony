@@ -22,10 +22,8 @@ public abstract class ConnectionFactory {
                     DriverManager.getConnection(pr.getProperty("url"),
                             pr.getProperty("uname"),
                             pr.getProperty("password"));
-
-            System.out.println("Connection successful");
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return connection;
@@ -35,12 +33,10 @@ public abstract class ConnectionFactory {
 
         try {
             connection.close();
-            System.out.println("Connection closed successfully");
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
-
         return null;
     }
 

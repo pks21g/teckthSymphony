@@ -2,7 +2,12 @@ package com.project.bank.dao;
 
 import com.project.bank.databaseconnection.ConnectionFactory;
 import com.project.bank.models.Customer;
+import com.project.bank.models.Deposit;
+
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public class CustomerDao {
 
@@ -23,9 +28,10 @@ public class CustomerDao {
         return false;
     }
 
-    public void openAccount(Customer customer) {
+    public void insertAccountDetails(Customer customer) {
 
             try {
+
                 String insertUser = "insert into customer (first_name, last_name, account_type, balance, deposit, email, password) values (?,?,?,?,?,?,?)";
                 PreparedStatement ps = ConnectionFactory.getConnection().prepareStatement(insertUser);
 
@@ -54,6 +60,29 @@ public class CustomerDao {
             }
     }
 
+    public void getAccountDetails(Customer customer){
+        try {
+            Statement st = ConnectionFactory.getConnection().createStatement();
+            String query = " select * from customer where email like '" +customer.getEmail()+"' ";
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs.next()) {
+                System.out.println("Login Successful " + ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()));
+                int id = rs.getInt(1);
+                String acType = rs.getString(4);
+                double balance = rs.getDouble(5);
+                System.out.println("ID: " + id + "\nAccount Type: " + acType +
+                        "\nBalance: " + balance);
+            }
+            else{
+                System.out.println("Account does not exist");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void getCustomer(){
 
         try {
@@ -69,9 +98,8 @@ public class CustomerDao {
                double amount = rs.getDouble(6);
                String email = rs.getString(7);
                String password = rs.getString(8);
-               Customer cs = new Customer(id, fname, lname, acType, balance, amount,
-                       email, password);
-                System.out.println(cs);
+               customer = new Customer(id, fname, lname, acType, email, password, amount, balance);
+                System.out.println(customer);
             }
             ConnectionFactory.closeConnection();
         }
@@ -79,32 +107,4 @@ public class CustomerDao {
             e.printStackTrace();
         }
     }
-
-    public boolean validateCustomer(){
-        return  (isValidName(customer.getFirstName()) &&
-                isValidName(customer.getLastName()) &&
-                isValidAccountType(customer.getAccountType()) &&
-                isValidDeposit(customer.getDeposit()) &&
-                isValidName(customer.getEmail()) &&
-                isValidName(customer.getPassword()));
-    }
-
-    private boolean isValidName(String name){
-        if (name == null) return false;
-        return name.matches("^[a-zA-Z]");
-    }
-
-    private boolean isValidEmail(String email){
-        return false;
-    }
-    public boolean isValidAccountType(String accountType){
-        if (accountType == null) return false;
-        return (accountType.equalsIgnoreCase("c") ||
-                accountType.equalsIgnoreCase("s"));
-    }
-
-    private boolean isValidDeposit(double deposit){
-        return deposit > 0;
-    }
-
 }
