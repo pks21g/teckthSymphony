@@ -20,7 +20,8 @@
 *.rar
 
 # Intellij
-AirlineReservation/.idea/
+.idea/
+out/
 *.iml
 
 # Mac Files
